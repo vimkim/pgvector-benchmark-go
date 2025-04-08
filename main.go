@@ -35,7 +35,14 @@ WITH ref AS (
 )
     SELECT vec <=> ref_vec AS cosine_distance 
     FROM %s, ref;
-`, *table, *table)
+
+EXPLAIN (ANALYZE, BUFFERS)
+WITH ref AS (
+    SELECT vec AS ref_vec FROM %s LIMIT 1
+)
+    SELECT vec <=> ref_vec AS cosine_distance 
+    FROM %s, ref;
+`, *table, *table, *table, *table)
 
 	// Write SQL to file
 	err := os.WriteFile(sqlFilename, []byte(sqlContent), 0644)
